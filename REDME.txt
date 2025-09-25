@@ -1,0 +1,70 @@
+SRP (Spectral Robustness Project) - User Guide
+===============================================
+0. Hardware Setup:  NVIDIA GeForce RTX 3090 *4
+
+1. Environment Setup
+--------------------
+1.1 Create Conda environment:
+conda create --name SRP python=3.10
+conda activate SRP
+pip install -r requirements.txt
+
+1.2 Prepare datasets:
+- CIFAR-10: Automatically downloaded to SRP/data/
+- MNIST: Automatically downloaded to SRP/data/
+- Tiny-ImageNet: Download from:
+  https://github.com/tjmoon0104/pytorch-tiny-imagenet
+  Unzip to SRP/data/tiny-imagenet/
+
+
+
+2. Training Models
+-----------------
+2.1 Command format:
+python train.py --data {cifar10,mnist,tiny-imagenet} \
+               --model {vit_b_16,resnet18,vgg16,densenet121} \
+               --attack {cw,pgd,none}
+
+2.2 Example:
+python train.py --data cifar10 --model vit_b_16 --attack cw
+
+2.3 Output files (saved in models/):
+- [model]_[dataset]_[attack]_final.pth
+- [model]_[dataset]_[attack]_best.pth
+
+NOTE: Training is required before evaluation!
+
+
+
+3. Model Evaluation
+------------------
+3.1 Command format:
+python main.py --eval {lips,clever,spec,cw,pgd} \
+              --data {cifar10,mnist,tiny-imagenet} \
+              --model {vit_b_16,resnet18,vgg16,densenet121} \
+              --attack {cw,pgd,none} \
+              --seed_n {0,1,2,3}
+
+3.2 Example:
+python main.py --eval lips --data cifar10 --model vit_b_16 --attack cw --seed_n 1
+
+3.3 Results saved in:
+- cw-results-5/ (default folder, name may vary)
+
+
+
+4. Troubleshooting
+-----------------
+- Dataset download issues:
+  Check network or manually download Tiny-ImageNet
+- GPU out of memory:
+  Reduce batch size in code
+- Inconsistent results:
+  Use fixed random seed (--seed_n parameter)
+
+  
+
+5. License
+---------
+MIT License - see LICENSE file
+
